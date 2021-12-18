@@ -22,7 +22,7 @@ class DashboardPage extends StatelessWidget {
               onPressed: () {
                 Get.to(() => EnterNewGosol());
               },
-              icon: Icon(Icons.playlist_add_outlined))
+              icon: const Icon(Icons.playlist_add_outlined))
         ],
       ),
       body: Obx(

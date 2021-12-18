@@ -147,8 +147,6 @@ class EnterNewGosol extends StatelessWidget {
                             DatabaseHelper.insertGosol(
                                 GosolModel(datetime: gosolTime).toMap());
 
-                            controller.getAllGosolStream();
-
                             Get.back();
                           },
                           child: const Text("Save"),

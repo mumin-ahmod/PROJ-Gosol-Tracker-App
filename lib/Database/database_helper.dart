@@ -1,5 +1,7 @@
 import 'package:gosol_tracker_app/Model/gosol_model.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqlbrite/sqlbrite.dart';
+
 import 'package:path/path.dart' as path;
 
 class DatabaseHelper {
@@ -20,7 +22,7 @@ class DatabaseHelper {
   }
 
   // OPENING THE DATABASE
-  static Future open() async {
+  static open() async {
     final rootPath = await getDatabasesPath();
 
     final dbPath = path.join(rootPath, "GosolDb.db");
@@ -31,21 +33,37 @@ class DatabaseHelper {
     // OpenDatabase GIVES AND INSTANCE OF THE DATABASE
   }
 
+  //
+  // static Future<BriteDatabase> sqlBright() async {
+  //
+  //   final dbase = await open();
+  //
+  //
+  //   return britedb = BriteDatabase(dbase);
+  // }
+
   static Future insertGosol(Map<String, dynamic> row) async {
-    final db = await open();
+    final Database db = await open();
+    final briteDb = BriteDatabase(db);
 
     print("ROW INSERTED");
-    return await db.insert(tableName, row);
+    return await briteDb.insert(tableName, row);
   }
 
-  static Future<List<GosolModel>> getAllGosols() async {
-    final db = await open();
+  static Stream<List<GosolModel>> getAllGosols() async* {
+    final Database db = await open();
 
-    List<Map<String, dynamic>> mapList = await db.query(tableName);
+    final briteDb = BriteDatabase(db);
 
-    // GOT ALL THE GOSOLS!
+    // List<Map<String, dynamic>> mapList = db.createQuery(tableName);
+    // // GOT ALL THE GOSOLS!
+    // return List.generate(
+    //     mapList.length, (index) => GosolModel.fromMap(mapList[index]));
 
-    return List.generate(
-        mapList.length, (index) => GosolModel.fromMap(mapList[index]));
+    ///yield* db.createQuery(tableName).forEach((map) => map(Map<String, dynamic> map)=> GosolModel.fromMap(map));
+
+    yield* briteDb
+        .createQuery(tableName)
+        .mapToList((row) => GosolModel.fromMap(row));
   }
 }
