@@ -6,6 +6,9 @@ import 'package:sqlbrite/sqlbrite.dart';
 class GosolController extends GetxController {
   final gosolList = <GosolModel>[].obs;
 
+  final unDay = 0.obs;
+  final diff = 0.obs;
+
   @override
   void onInit() {
     gosolList.bindStream(DatabaseHelper.getAllGosols());
