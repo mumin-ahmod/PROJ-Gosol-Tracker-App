@@ -14,10 +14,11 @@ class GosolTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.indigo,
-        ),
-        home: DashboardPage());
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+      ),
+      home: DashboardPage(),
+    );
   }
 }

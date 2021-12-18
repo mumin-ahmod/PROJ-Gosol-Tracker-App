@@ -20,7 +20,7 @@ class DashboardPage extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Get.to(EnterNewGosol());
+                Get.to(() => EnterNewGosol());
               },
               icon: Icon(Icons.playlist_add_outlined))
         ],
