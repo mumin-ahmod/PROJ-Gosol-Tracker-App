@@ -37,6 +37,7 @@ dependencies:
   get: ^4.6.1
   sqflite: ^2.0.1
   sqlbrite: ^2.1.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
