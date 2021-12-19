@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosol_tracker_app/Controller/gosol_controller.dart';
@@ -5,8 +6,12 @@ import 'package:gosol_tracker_app/Pages/enter_new_gosol.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 
+import '../my_theme.dart';
+
 class DashboardPage extends StatelessWidget {
   DashboardPage({Key? key}) : super(key: key);
+
+  final theme = MyTheme.light();
 
   GosolController controller = Get.put(GosolController());
 
@@ -27,12 +32,15 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        titleSpacing: 0,
+        leadingWidth: 70,
+        // SPACE BEFORE LEADING ICON / MENU ICON
         toolbarHeight: 70,
-        backgroundColor: Colors.white,
+
         iconTheme: const IconThemeData(color: Colors.black54),
-        title: const Text(
+        title: Text(
           "Shower Tracker",
-          style: TextStyle(color: Colors.black54),
+          style: theme.textTheme.headline4,
         ),
         elevation: 0,
         actions: [
@@ -49,7 +57,7 @@ class DashboardPage extends StatelessWidget {
           )
         ],
       ),
-      drawer: Drawer(),
+      drawer: const Drawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -60,46 +68,15 @@ class DashboardPage extends StatelessWidget {
               width: 400,
               child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const CircleAvatar(
-                          radius: 35,
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "Mumin Ahmod",
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "🗺️ Mymensingh",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  _buildProfile(),
+                  const SizedBox(
+                    height: 50,
                   ),
                   Center(
                     child: Obx(
                       () => Text(
-                        "Today \nYou are UnGosoled For: \n${getUnday()} Days",
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                        style: theme.textTheme.headline3,
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -110,7 +87,7 @@ class DashboardPage extends StatelessWidget {
           ),
           Flexible(
             child: Obx(
-              () => SizedBox(
+                  () => SizedBox(
                 width: 300,
                 child: ListView(children: [
                   FixedTimeline.tileBuilder(
@@ -144,12 +121,47 @@ class DashboardPage extends StatelessWidget {
                         return ConnectorStyle.solidLine;
                       },
                       indicatorStyleBuilder: (context, index) =>
-                          IndicatorStyle.dot,
+                      IndicatorStyle.dot,
                     ),
                   ),
                 ]),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfile() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 6.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const CircleAvatar(
+            backgroundImage: NetworkImage(
+                "https://png.pngtree.com/png-vector/20190120/ourlarge/pngtree-man-vector-icon-png-image_470295.jpg"),
+            radius: 35,
+          ),
+          const SizedBox(
+            width: 20,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Mumin Ahmod",
+                style: theme.textTheme.headline1,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  "🗺️ Mymensingh",
+                  style: theme.textTheme.headline2,
+                ),
+              ),
+            ],
           ),
         ],
       ),

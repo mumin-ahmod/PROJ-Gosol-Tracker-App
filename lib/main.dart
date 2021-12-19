@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosol_tracker_app/Pages/dashboard_page.dart';
-import 'package:gosol_tracker_app/Pages/enter_new_gosol.dart';
+import 'package:gosol_tracker_app/my_theme.dart';
 
 void main() {
   runApp(const GosolTrackerApp());
@@ -10,14 +10,13 @@ void main() {
 class GosolTrackerApp extends StatelessWidget {
   const GosolTrackerApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final theme = MyTheme.light();
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
+      theme: theme,
       home: DashboardPage(),
     );
   }
