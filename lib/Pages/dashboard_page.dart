@@ -79,6 +79,7 @@ class DashboardPage extends StatelessWidget {
                 icon: const Icon(
                   Icons.add,
                   size: 30,
+                  color: Color(0xff64dd17),
                 )),
           )
         ],
@@ -121,8 +122,8 @@ class DashboardPage extends StatelessWidget {
                                         ),
                                         Text(
                                           "Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
-                                          style: theme.textTheme.headline4,
-                                        ),
+                                    style: theme.textTheme.headline3,
+                                  ),
                                       ],
                                     ),
                                     SizedBox(
@@ -139,7 +140,7 @@ class DashboardPage extends StatelessWidget {
                                   ),
                                   Text(
                                     "Ektana Gosol: ${getContDay()} Days! ",
-                                    style: theme.textTheme.headline4,
+                                    style: theme.textTheme.headline3,
                                   ),
                                 ],
                               ),
@@ -169,6 +170,9 @@ class DashboardPage extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   letterSpacing: 5),
             ),
+          ),
+          const SizedBox(
+            height: 10,
           ),
           Flexible(
             child: Obx(
@@ -251,34 +255,47 @@ class DashboardPage extends StatelessWidget {
   Widget _buildProfile() {
     return Padding(
       padding: const EdgeInsets.only(left: 6.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://png.pngtree.com/png-vector/20190120/ourlarge/pngtree-man-vector-icon-png-image_470295.jpg"),
-            radius: 35,
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Mumin Ahmod",
-                style: theme.textTheme.headline1,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10.0),
-                child: Text(
-                  "🗺️ Mymensingh",
-                  style: theme.textTheme.headline2,
+      child: Obx(
+        () => Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const CircleAvatar(
+              backgroundImage: NetworkImage(
+                  "https://png.pngtree.com/png-vector/20190120/ourlarge/pngtree-man-vector-icon-png-image_470295.jpg"),
+              radius: 35,
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Mumin Ahmod",
+                  style: theme.textTheme.headline1,
                 ),
-              ),
-            ],
-          ),
-        ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
+                        size: 18,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        controller.currentCity.value,
+                        style: theme.textTheme.headline2,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

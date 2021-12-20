@@ -9,7 +9,7 @@ class MyTheme {
     headline2: GoogleFonts.encodeSans(
         fontSize: 16, color: Colors.black54, fontWeight: FontWeight.w600),
     headline3: GoogleFonts.encodeSans(
-        fontSize: 20, color: Colors.black87, fontWeight: FontWeight.w600),
+        fontSize: 20, color: Colors.black54, fontWeight: FontWeight.w600),
     headline4: GoogleFonts.encodeSans(
         fontSize: 20, color: Colors.black87, fontWeight: FontWeight.w600),
   );
