@@ -84,7 +84,37 @@ class DashboardPage extends StatelessWidget {
           )
         ],
       ),
-      drawer: const Drawer(),
+      drawer: Drawer(
+        child: Center(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 200,
+              ),
+              _buildProfile(),
+              const SizedBox(
+                height: 20,
+              ),
+              const ListTile(
+                leading: Icon(Icons.person_outline),
+                title: Text("Edit Profile"),
+              ),
+              const ListTile(
+                leading: Icon(Icons.list_alt),
+                title: Text("Gosol List"),
+              ),
+              const ListTile(
+                leading: Icon(Icons.access_time_outlined),
+                title: Text("Set Gosol Alerm"),
+              ),
+              const ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text("About"),
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
