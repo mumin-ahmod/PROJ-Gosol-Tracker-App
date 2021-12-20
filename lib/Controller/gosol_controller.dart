@@ -8,6 +8,7 @@ class GosolController extends GetxController {
 
   final unDay = 0.obs;
   final diff = 0.obs;
+  final contDay = 0.obs;
 
   @override
   void onInit() {

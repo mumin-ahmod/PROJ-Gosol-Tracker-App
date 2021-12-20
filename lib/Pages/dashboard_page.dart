@@ -29,6 +29,31 @@ class DashboardPage extends StatelessWidget {
     }
   }
 
+  int getContDay() {
+    int cont = 0;
+
+    if (controller.gosolList.isNotEmpty) {
+      int length = controller.gosolList.value.length;
+
+      for (int i = 1; i < length; i++) {
+        if ((DateTime.fromMicrosecondsSinceEpoch(
+                        controller.gosolList.value[i].datetime!)
+                    .day -
+                DateTime.fromMicrosecondsSinceEpoch(
+                        controller.gosolList.value[i - 1].datetime!)
+                    .day) ==
+            1) {
+          cont++;
+        } else {
+          cont = 0;
+        }
+      }
+
+      print("CONT : $cont " "LENGHTH: $length");
+    }
+    return cont;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,9 +112,9 @@ class DashboardPage extends StatelessWidget {
                                     ),
                                     Row(
                                       children: [
-                                        SizedBox(
-                                          width: 15,
-                                        ),
+                                        const SizedBox(
+                                    width: 15,
+                                  ),
                                         Icon(Icons.date_range),
                                         SizedBox(
                                           width: 15,
@@ -111,24 +136,24 @@ class DashboardPage extends StatelessWidget {
                                         Icon(Icons.date_range),
                                         SizedBox(
                                           width: 15,
-                                        ),
-                                        Text(
-                                          "Ektana Gosol: 0 Days! ",
-                                          style: theme.textTheme.headline4,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  Text(
+                                    "Ektana Gosol: ${getContDay()} Days! ",
+                                    style: theme.textTheme.headline4,
+                                  ),
+                                ],
                               ),
-                            )
-
-                        //     Text(
-                        //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
-                        //   style: theme.textTheme.headline3,
-                        //   textAlign: TextAlign.center,
-                        // ),
+                            ],
+                          ),
                         ),
+                      ),
+                      //
+                      //     Text(
+                      //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                      //   style: theme.textTheme.headline3,
+                      //   textAlign: TextAlign.center,
+                      // ),
+                    ),
                   ),
                 ],
               ),
@@ -159,15 +184,26 @@ class DashboardPage extends StatelessWidget {
                 builder: TimelineTileBuilder.connected(
                   itemCount: controller.gosolList.value.length,
                   contentsAlign: ContentsAlign.basic,
-                  contentsBuilder: (context, index) => SizedBox(
-                    height: 100,
-                    width: 400,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 40, 0, 0),
-                      child: Text(
-                          "UnGosoled For: \n${DateTime.fromMicrosecondsSinceEpoch(controller.gosolList.value[index].datetime!).day - DateTime.fromMicrosecondsSinceEpoch(controller.gosolList.value[index == 0 ? 0 : index - 1].datetime!).day} Days"),
-                    ),
-                  ),
+                  contentsBuilder: (context, index) {
+                    int dateToday = DateTime.fromMicrosecondsSinceEpoch(
+                            controller.gosolList.value[index].datetime!)
+                        .day;
+
+                    int datePrev = DateTime.fromMicrosecondsSinceEpoch(
+                            controller.gosolList
+                                .value[index == 0 ? 0 : index - 1].datetime!)
+                        .day;
+
+                    return SizedBox(
+                      height: 100,
+                      width: 400,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 40, 0, 0),
+                        child: Text(
+                            "UnGosoled For: \n${dateToday - datePrev} Days"),
+                      ),
+                    );
+                  },
                   oppositeContentsBuilder: (context, index) {
                     final gosol = controller.gosolList.value[index];
 
@@ -247,3 +283,4 @@ class DashboardPage extends StatelessWidget {
     );
   }
 }
+
