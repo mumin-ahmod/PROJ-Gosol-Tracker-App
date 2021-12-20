@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gosol_tracker_app/Controller/gosol_controller.dart';
 import 'package:gosol_tracker_app/Pages/enter_new_gosol.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +16,7 @@ class DashboardPage extends StatelessWidget {
 
   GosolController controller = Get.put(GosolController());
 
-  DateFormat f = DateFormat("dd-MMM \nh:mm a");
+  DateFormat f = DateFormat("EEE d-MMM \nh:mm a");
 
   int getUnday() {
     if (controller.gosolList.isNotEmpty) {
@@ -73,58 +74,136 @@ class DashboardPage extends StatelessWidget {
                     height: 50,
                   ),
                   Center(
-                    child: Obx(
-                      () => Text(
-                        "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
-                        style: theme.textTheme.headline3,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                    child: Obx(() => ClipRRect(
+                              borderRadius: BorderRadius.circular(30.0),
+                              child: Container(
+                                width: double.infinity,
+                                height: 100,
+                                color: const Color(0xFFdcedc8),
+                                child: Column(
+                                  children: [
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Icon(Icons.date_range),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Text(
+                                          "Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                                          style: theme.textTheme.headline4,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 15,
+                                        ),
+                                        Icon(Icons.date_range),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Text(
+                                          "Ektana Gosol: 0 Days! ",
+                                          style: theme.textTheme.headline4,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+
+                        //     Text(
+                        //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                        //   style: theme.textTheme.headline3,
+                        //   textAlign: TextAlign.center,
+                        // ),
+                        ),
                   ),
                 ],
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              "TIMELINE",
+              style: GoogleFonts.encodeSans(
+                  fontSize: 20,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 5),
+            ),
+          ),
           Flexible(
             child: Obx(
-                  () => SizedBox(
-                width: 300,
-                child: ListView(children: [
-                  FixedTimeline.tileBuilder(
-                    builder: TimelineTileBuilder.connectedFromStyle(
-                      itemCount: controller.gosolList.value.length,
-                      contentsBuilder: (context, index) => SizedBox(
-                        height: 100,
-                        width: 400,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                              "UnGosoled For: \n${DateTime.fromMicrosecondsSinceEpoch(controller.gosolList.value[index].datetime!).day - DateTime.fromMicrosecondsSinceEpoch(controller.gosolList.value[index == 0 ? 0 : index - 1].datetime!).day} Days"),
-                        ),
-                      ),
-                      oppositeContentsBuilder: (context, index) {
-                        final gosol = controller.gosolList.value[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: Card(
-                            child: Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Text(f.format(
-                                  DateTime.fromMicrosecondsSinceEpoch(
-                                      gosol.datetime!))),
-                            ),
-                          ),
-                        );
-                      },
-                      connectorStyleBuilder: (context, index) {
-                        return ConnectorStyle.solidLine;
-                      },
-                      indicatorStyleBuilder: (context, index) =>
-                      IndicatorStyle.dot,
+              () => Timeline.tileBuilder(
+                theme: TimelineThemeData(
+                  connectorTheme: const ConnectorThemeData(
+                    thickness: 3.0,
+                  ),
+                  indicatorTheme: const IndicatorThemeData(
+                    size: 15.0,
+                  ),
+                ),
+                builder: TimelineTileBuilder.connected(
+                  itemCount: controller.gosolList.value.length,
+                  contentsAlign: ContentsAlign.basic,
+                  contentsBuilder: (context, index) => SizedBox(
+                    height: 100,
+                    width: 400,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 40, 0, 0),
+                      child: Text(
+                          "UnGosoled For: \n${DateTime.fromMicrosecondsSinceEpoch(controller.gosolList.value[index].datetime!).day - DateTime.fromMicrosecondsSinceEpoch(controller.gosolList.value[index == 0 ? 0 : index - 1].datetime!).day} Days"),
                     ),
                   ),
-                ]),
+                  oppositeContentsBuilder: (context, index) {
+                    final gosol = controller.gosolList.value[index];
+
+                    return Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(f.format(
+                              DateTime.fromMicrosecondsSinceEpoch(
+                                  gosol.datetime!))),
+                        ),
+                      ),
+                    );
+                  },
+
+                  connectorBuilder: (_, index, __) => const SolidLineConnector(
+                    color: Color(0xff64dd17),
+                  ),
+
+                  indicatorBuilder: (_, index) => const DotIndicator(
+                    color: Color(0xff64dd17),
+                  ),
+
+                  itemExtentBuilder: (_, __) {
+                    return 100.0;
+                  },
+                  // indicatorStyle: IndicatorStyle.container,
+                  // connectorStyle: ConnectorStyle.solidLine,
+
+                  // connectorStyleBuilder: (context, index) {
+                  //   return ConnectorStyle.solidLine;
+                  // },
+                  // indicatorStyleBuilder: (context, index) =>
+                  // IndicatorStyle.dot,
+                ),
               ),
             ),
           ),
