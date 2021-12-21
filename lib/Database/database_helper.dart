@@ -63,7 +63,15 @@ class DatabaseHelper {
     ///yield* db.createQuery(tableName).forEach((map) => map(Map<String, dynamic> map)=> GosolModel.fromMap(map));
 
     yield* briteDb
-        .createQuery(tableName)
+        .createQuery(tableName, orderBy: datetimeColumn)
         .mapToList((row) => GosolModel.fromMap(row));
+  }
+
+  static delete(int id) async {
+    final Database db = await open();
+
+    final briteDb = BriteDatabase(db);
+
+    return briteDb.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 }

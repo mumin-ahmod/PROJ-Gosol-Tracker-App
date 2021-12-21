@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gosol_tracker_app/Controller/gosol_controller.dart';
 import 'package:gosol_tracker_app/Pages/enter_new_gosol.dart';
+import 'package:gosol_tracker_app/Pages/gosol_list_page.dart';
 import 'package:intl/intl.dart';
 import 'package:timelines/timelines.dart';
 
@@ -30,7 +31,7 @@ class DashboardPage extends StatelessWidget {
   }
 
   int getContDay() {
-    int cont = 0;
+    int cont = 1;
 
     if (controller.gosolList.isNotEmpty) {
       int length = controller.gosolList.value.length;
@@ -44,8 +45,22 @@ class DashboardPage extends StatelessWidget {
                     .day) ==
             1) {
           cont++;
+        } else if ((DateTime.fromMicrosecondsSinceEpoch(
+                    controller.gosolList.value[i].datetime!)
+                .day ==
+            DateTime.fromMicrosecondsSinceEpoch(
+                    controller.gosolList.value[i - 1].datetime!)
+                .day)) {
+          cont = cont;
+        } else if ((DateTime.fromMicrosecondsSinceEpoch(
+                    controller.gosolList.value[i].datetime!)
+                .day ==
+            DateTime.fromMicrosecondsSinceEpoch(
+                    controller.gosolList.value[i + 1].datetime!)
+                .day)) {
+          cont = cont;
         } else {
-          cont = 0;
+          cont = 1;
         }
       }
 
@@ -99,9 +114,14 @@ class DashboardPage extends StatelessWidget {
                 leading: Icon(Icons.person_outline),
                 title: Text("Edit Profile"),
               ),
-              const ListTile(
-                leading: Icon(Icons.list_alt),
-                title: Text("Gosol List"),
+              InkWell(
+                onTap: () {
+                  Get.to(() => GosolList());
+                },
+                child: const ListTile(
+                  leading: Icon(Icons.list_alt),
+                  title: Text("Gosol List"),
+                ),
               ),
               const ListTile(
                 leading: Icon(Icons.access_time_outlined),
@@ -169,7 +189,7 @@ class DashboardPage extends StatelessWidget {
                                           width: 15,
                                   ),
                                   Text(
-                                    "Ektana Gosol: ${getContDay()} Days! ",
+                                    "Ektana Gosol: ${getContDay() == 1 ? 0 : getContDay()} Days! ",
                                     style: theme.textTheme.headline3,
                                   ),
                                 ],

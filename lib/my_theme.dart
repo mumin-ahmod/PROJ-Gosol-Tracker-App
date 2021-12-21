@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MyTheme {
   static TextTheme lightTextTheme = TextTheme(
-    bodyText1: GoogleFonts.ubuntu(fontSize: 14, color: Colors.black87),
+    bodyText1: GoogleFonts.ubuntu(fontSize: 16, color: Colors.black87),
     headline1: GoogleFonts.encodeSans(
         fontSize: 25, color: Colors.black87, fontWeight: FontWeight.w600),
     headline2: GoogleFonts.encodeSans(
