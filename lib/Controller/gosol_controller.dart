@@ -12,15 +12,15 @@ class GosolController extends GetxController {
   final diff = 0.obs;
   final contDay = 0.obs;
 
-  final currentCity = "".obs;
+  final currentCity = " ".obs;
 
   @override
-  void onInit() {
+  void onInit() async {
+    await getCity();
+
     gosolList.bindStream(DatabaseHelper.getAllGosols());
 
     super.onInit();
-
-    getCity();
   }
 
 // getAllGosolStream() {
@@ -35,6 +35,7 @@ class GosolController extends GetxController {
 
   getCity() async {
     GeoCode geoCode = GeoCode();
+    print("LOCATION SEARCHING");
 
     try {
       bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
@@ -55,6 +56,8 @@ class GosolController extends GetxController {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
 
+      print("POSITION: ${position.latitude}");
+
       // final coordinates = Coordinates(latitude: position.latitude, longitude: position.longitude);
 
       var address = await geoCode.reverseGeocoding(
@@ -62,7 +65,7 @@ class GosolController extends GetxController {
 
       print("LOCATION CITY: ${address.city}");
 
-      currentCity.value = address.city!;
+      currentCity.value = address.city ?? "-";
     } catch (e) {
       print(e);
     }

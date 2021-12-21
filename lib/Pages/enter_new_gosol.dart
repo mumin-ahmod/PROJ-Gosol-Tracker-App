@@ -21,7 +21,7 @@ class EnterNewGosol extends StatelessWidget {
 
   DateFormat f = DateFormat("h:mm a");
 
-  GosolController controller = Get.put(GosolController());
+  GosolController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {

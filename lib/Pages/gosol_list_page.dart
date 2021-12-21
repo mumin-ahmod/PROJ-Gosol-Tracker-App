@@ -10,7 +10,7 @@ class GosolList extends StatelessWidget {
 
   final theme = MyTheme.light();
 
-  GosolController controller = Get.put(GosolController());
+  GosolController controller = Get.find();
 
   DateFormat f = DateFormat("EEE d-MMM - h:mm a");
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gosol_tracker_app/Controller/gosol_controller.dart';
+import 'package:gosol_tracker_app/Pages/empty_page.dart';
 import 'package:gosol_tracker_app/Pages/enter_new_gosol.dart';
 import 'package:gosol_tracker_app/Pages/gosol_list_page.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +16,7 @@ class DashboardPage extends StatelessWidget {
 
   final theme = MyTheme.light();
 
-  GosolController controller = Get.put(GosolController());
+  GosolController controller = Get.find();
 
   DateFormat f = DateFormat("EEE d-MMM \nh:mm a");
 
@@ -99,42 +100,7 @@ class DashboardPage extends StatelessWidget {
           )
         ],
       ),
-      drawer: Drawer(
-        child: Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 200,
-              ),
-              _buildProfile(),
-              const SizedBox(
-                height: 20,
-              ),
-              const ListTile(
-                leading: Icon(Icons.person_outline),
-                title: Text("Edit Profile"),
-              ),
-              InkWell(
-                onTap: () {
-                  Get.to(() => GosolList());
-                },
-                child: const ListTile(
-                  leading: Icon(Icons.list_alt),
-                  title: Text("Gosol List"),
-                ),
-              ),
-              const ListTile(
-                leading: Icon(Icons.access_time_outlined),
-                title: Text("Set Gosol Alerm"),
-              ),
-              const ListTile(
-                leading: Icon(Icons.info_outline),
-                title: Text("About"),
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: buildDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -163,30 +129,30 @@ class DashboardPage extends StatelessWidget {
                                     ),
                                     Row(
                                       children: [
-                                        const SizedBox(
+                                  const SizedBox(
                                     width: 15,
                                   ),
-                                        Icon(Icons.date_range),
-                                        SizedBox(
-                                          width: 15,
-                                        ),
-                                        Text(
-                                          "Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                                  const Icon(Icons.date_range),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Text(
+                                    "Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
                                     style: theme.textTheme.headline3,
                                   ),
-                                      ],
+                                ],
                                     ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
+                                    const SizedBox(
+                                height: 10,
+                              ),
                                     Row(
                                       children: [
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Icon(Icons.date_range),
-                                        SizedBox(
-                                          width: 15,
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  const Icon(Icons.repeat),
+                                  const SizedBox(
+                                    width: 15,
                                   ),
                                   Text(
                                     "Ektana Gosol: ${getContDay() == 1 ? 0 : getContDay()} Days! ",
@@ -302,6 +268,54 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+  Drawer buildDrawer() {
+    return Drawer(
+      child: Center(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 200,
+            ),
+            _buildProfile(),
+            const SizedBox(
+              height: 20,
+            ),
+            const ListTile(
+              leading: Icon(Icons.person_outline),
+              title: Text("Edit Profile"),
+            ),
+            InkWell(
+              onTap: () {
+                Get.to(() => GosolList());
+              },
+              child: const ListTile(
+                leading: Icon(Icons.list_alt),
+                title: Text("Gosol List"),
+              ),
+            ),
+            const ListTile(
+              leading: Icon(Icons.access_time_outlined),
+              title: Text("Set Gosol Alerm"),
+            ),
+            InkWell(
+              onTap: () {
+                Get.to(() => EmptyPage());
+              },
+              child: const ListTile(
+                leading: Icon(Icons.note_rounded),
+                title: Text("Blog"),
+              ),
+            ),
+            const ListTile(
+              leading: Icon(Icons.info_outline),
+              title: Text("About"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildProfile() {
     return Padding(
       padding: const EdgeInsets.only(left: 6.0),
@@ -328,11 +342,11 @@ class DashboardPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on,
                         size: 18,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Text(
