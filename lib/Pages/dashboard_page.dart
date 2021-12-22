@@ -53,13 +53,15 @@ class DashboardPage extends StatelessWidget {
                     controller.gosolList.value[i - 1].datetime!)
                 .day)) {
           cont = cont;
-        } else if ((DateTime.fromMicrosecondsSinceEpoch(
-                    controller.gosolList.value[i].datetime!)
-                .day ==
-            DateTime.fromMicrosecondsSinceEpoch(
-                    controller.gosolList.value[i + 1].datetime!)
-                .day)) {
-          cont = cont;
+        } else if (i + 1 < length) {
+          if ((DateTime.fromMicrosecondsSinceEpoch(
+                      controller.gosolList.value[i].datetime!)
+                  .day ==
+              DateTime.fromMicrosecondsSinceEpoch(
+                      controller.gosolList.value[i + 1].datetime!)
+                  .day)) {
+            cont = cont;
+          }
         } else {
           cont = 1;
         }
@@ -340,21 +342,23 @@ class DashboardPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        size: 18,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        controller.currentCity.value,
-                        style: theme.textTheme.headline2,
-                      ),
-                    ],
-                  ),
+                  child: controller.currentCity.value.isNotEmpty
+                      ? Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              size: 18,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              controller.currentCity.value,
+                              style: theme.textTheme.headline2,
+                            ),
+                          ],
+                        )
+                      : Container(),
                 ),
               ],
             ),

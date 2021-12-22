@@ -17,7 +17,7 @@ class EnterNewGosol extends StatelessWidget {
 
   DateTime dateNow = DateTime.now();
   DateTime pickedDate = DateTime.now();
-  TimeOfDay? timeOfDay;
+  Rx<TimeOfDay> timeOfDay = TimeOfDay.now().obs;
 
   DateFormat f = DateFormat("h:mm a");
 
@@ -92,7 +92,8 @@ class EnterNewGosol extends StatelessWidget {
                                             "Day Before Yesterday",
                                             "Yesterday",
                                             "Today",
-                                          ]
+                                            "Tomorrow"
+                                      ]
                                               .map((value) =>
                                               DropdownMenuItem<String>(
                                                 child: Text(value),
@@ -106,13 +107,16 @@ class EnterNewGosol extends StatelessWidget {
                                               pickedDate = DateTime(dateNow.year,
                                                   dateNow.month, dateNow.day - 1);
                                             } else if (value == "Today") {
-                                              pickedDate = dateNow;
-                                            } else {
-                                              pickedDate = DateTime(dateNow.year,
-                                                  dateNow.month, dateNow.day - 2);
-                                            }
+                                          pickedDate = dateNow;
+                                        } else if (value == "Tomorrow") {
+                                          pickedDate = DateTime(dateNow.year,
+                                              dateNow.month, dateNow.day + 1);
+                                        } else {
+                                          pickedDate = DateTime(dateNow.year,
+                                              dateNow.month, dateNow.day - 2);
+                                        }
 
-                                            print("PICKED DATE: $pickedDate");
+                                        print("PICKED DATE: $pickedDate");
                                           },
                                         ),
                                       ),
@@ -141,21 +145,25 @@ class EnterNewGosol extends StatelessWidget {
                             child: Obx(
                               () => OutlinedButton(
                                 onPressed: () async {
-                                  timeOfDay = await showTimePicker(
+                                  timeOfDay.value = (await showTimePicker(
                                       context: context,
-                                      initialTime: TimeOfDay.now());
+                                      initialTime: TimeOfDay.now()))!;
 
                                   timePicked.value = true;
 
                                   print("PICKED TIME: $timeOfDay");
                                 },
                                 child: timePicked.value
-                                    ? Text(f.format(DateTime(
-                                        pickedDate.year,
-                                        pickedDate.month,
-                                        pickedDate.day,
-                                        timeOfDay?.hour ?? 0,
-                                        timeOfDay?.minute ?? 0)))
+                                    ? Text(
+                                        f.format(
+                                          DateTime(
+                                              pickedDate.year,
+                                              pickedDate.month,
+                                              pickedDate.day,
+                                              timeOfDay.value.hour,
+                                              timeOfDay.value.minute),
+                                        ),
+                                      )
                                     : const Text("Select Time"),
                                 style: OutlinedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
@@ -175,11 +183,11 @@ class EnterNewGosol extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             int gosolTime = DateTime(
-                                pickedDate.year,
-                                pickedDate.month,
-                                pickedDate.day,
-                                timeOfDay!.hour,
-                                timeOfDay!.minute)
+                                    pickedDate.year,
+                                    pickedDate.month,
+                                    pickedDate.day,
+                                    timeOfDay.value.hour,
+                                    timeOfDay.value.minute)
                                 .microsecondsSinceEpoch;
                             DatabaseHelper.insertGosol(
                                 GosolModel(datetime: gosolTime).toMap());

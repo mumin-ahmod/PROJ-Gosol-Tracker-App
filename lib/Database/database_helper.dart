@@ -12,6 +12,9 @@ class DatabaseHelper {
   static const datetimeColumn = "datetime";
   static const temperatureColumn = "temp";
 
+  static Database? _database;
+  static late BriteDatabase _streamDatabase;
+
   // DATABASE CREATE QUERY
   static Future _onCreate(Database db, int version) {
     return db.execute("""CREATE TABLE $tableName (
@@ -33,27 +36,33 @@ class DatabaseHelper {
     // OpenDatabase GIVES AND INSTANCE OF THE DATABASE
   }
 
-  //
-  // static Future<BriteDatabase> sqlBright() async {
-  //
-  //   final dbase = await open();
-  //
-  //
-  //   return britedb = BriteDatabase(dbase);
-  // }
+  static get database async {
+    if (_database != null) return _database;
+
+    if (_database == null) {
+      _database = await open();
+
+      _streamDatabase = BriteDatabase((_database!));
+    }
+
+    return _database;
+  }
+
+  static Future<BriteDatabase> get streamDatabase async {
+    await database;
+
+    return _streamDatabase;
+  }
 
   static Future insertGosol(Map<String, dynamic> row) async {
-    final Database db = await open();
-    final briteDb = BriteDatabase(db);
+    final briteDb = await DatabaseHelper.streamDatabase;
 
     print("ROW INSERTED");
     return await briteDb.insert(tableName, row);
   }
 
   static Stream<List<GosolModel>> getAllGosols() async* {
-    final Database db = await open();
-
-    final briteDb = BriteDatabase(db);
+    final briteDb = await DatabaseHelper.streamDatabase;
 
     // List<Map<String, dynamic>> mapList = db.createQuery(tableName);
     // // GOT ALL THE GOSOLS!
@@ -67,10 +76,10 @@ class DatabaseHelper {
         .mapToList((row) => GosolModel.fromMap(row));
   }
 
-  static delete(int id) async {
-    final Database db = await open();
+  static Future delete(int id) async {
+    final briteDb = await DatabaseHelper.streamDatabase;
 
-    final briteDb = BriteDatabase(db);
+    print("ROW DELETED");
 
     return briteDb.delete(tableName, where: "id = ?", whereArgs: [id]);
   }

@@ -12,7 +12,7 @@ class GosolController extends GetxController {
   final diff = 0.obs;
   final contDay = 0.obs;
 
-  final currentCity = " ".obs;
+  final currentCity = "".obs;
 
   @override
   void onInit() async {
@@ -60,6 +60,7 @@ class GosolController extends GetxController {
 
       // final coordinates = Coordinates(latitude: position.latitude, longitude: position.longitude);
 
+      print("BEFORE ADDRESS");
       var address = await geoCode.reverseGeocoding(
           latitude: position.latitude, longitude: position.longitude);
 

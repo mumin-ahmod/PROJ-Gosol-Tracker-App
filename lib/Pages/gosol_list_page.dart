@@ -26,25 +26,27 @@ class GosolList extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: ListView.separated(
-        itemBuilder: (context, index) {
-          final gosol = controller.gosolList.value[index];
+      body: Obx(
+        () => ListView.separated(
+          itemBuilder: (context, index) {
+            final gosol = controller.gosolList.value[index];
 
-          return ListTile(
-            title: Text(
-              f.format(DateTime.fromMicrosecondsSinceEpoch(gosol.datetime!)),
-              style: theme.textTheme.bodyText1,
-            ),
-            trailing: IconButton(
-              onPressed: () {
-                DatabaseHelper.delete(gosol.id!);
-              },
-              icon: Icon(Icons.delete_forever),
-            ),
-          );
-        },
-        separatorBuilder: (context, index) => const Divider(),
-        itemCount: controller.gosolList.value.length,
+            return ListTile(
+              title: Text(
+                f.format(DateTime.fromMicrosecondsSinceEpoch(gosol.datetime!)),
+                style: theme.textTheme.bodyText1,
+              ),
+              trailing: IconButton(
+                onPressed: () async {
+                  await DatabaseHelper.delete(gosol.id!);
+                },
+                icon: Icon(Icons.delete_forever),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => const Divider(),
+          itemCount: controller.gosolList.value.length,
+        ),
       ),
     );
   }
