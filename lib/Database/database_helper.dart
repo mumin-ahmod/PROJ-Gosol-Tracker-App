@@ -118,4 +118,11 @@ class DatabaseHelper {
         .createQuery(profileTable)
         .mapToList((row) => ProfileModel.fromMap(row));
   }
+
+  static updateProfile(ProfileModel profile) async {
+    final briteDb = await DatabaseHelper.streamDatabase;
+
+    briteDb
+        .update(profileTable, profile.toMap(), where: "id =?", whereArgs: [1]);
+  }
 }
