@@ -92,7 +92,6 @@ class EnterNewGosol extends StatelessWidget {
                                             "Day Before Yesterday",
                                             "Yesterday",
                                             "Today",
-                                            "Tomorrow"
                                       ]
                                               .map((value) =>
                                               DropdownMenuItem<String>(
@@ -108,9 +107,6 @@ class EnterNewGosol extends StatelessWidget {
                                                   dateNow.month, dateNow.day - 1);
                                             } else if (value == "Today") {
                                           pickedDate = dateNow;
-                                        } else if (value == "Tomorrow") {
-                                          pickedDate = DateTime(dateNow.year,
-                                              dateNow.month, dateNow.day + 1);
                                         } else {
                                           pickedDate = DateTime(dateNow.year,
                                               dateNow.month, dateNow.day - 2);

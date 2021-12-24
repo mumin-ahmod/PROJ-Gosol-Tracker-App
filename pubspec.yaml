@@ -42,6 +42,7 @@ dependencies:
   google_fonts: ^2.1.0
   geolocator: ^8.0.1
   geocode: ^1.0.1
+  image_picker: ^0.8.4+4
 
 
 dev_dependencies:

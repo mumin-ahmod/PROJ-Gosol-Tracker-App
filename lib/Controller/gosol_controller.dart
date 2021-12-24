@@ -4,9 +4,12 @@ import 'package:get/get.dart';
 import 'package:gosol_tracker_app/Database/database_helper.dart';
 import 'package:gosol_tracker_app/Model/gosol_model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gosol_tracker_app/Model/profile_model.dart';
 
 class GosolController extends GetxController {
   final gosolList = <GosolModel>[].obs;
+
+  final profileList = <ProfileModel>[].obs;
 
   final unDay = 0.obs;
   final diff = 0.obs;
@@ -18,7 +21,10 @@ class GosolController extends GetxController {
   void onInit() async {
     await getCity();
 
+    await createDefaultTable();
+
     gosolList.bindStream(DatabaseHelper.getAllGosols());
+    profileList.bindStream(DatabaseHelper.getAllProfile());
 
     super.onInit();
   }
@@ -69,6 +75,14 @@ class GosolController extends GetxController {
       currentCity.value = address.city ?? "-";
     } catch (e) {
       print(e);
+    }
+  }
+
+  createDefaultTable() async {
+    if (profileList.value.isEmpty) {
+      var obj = await ProfileModel.create();
+
+      DatabaseHelper.insertProfile(obj.toMap());
     }
   }
 }

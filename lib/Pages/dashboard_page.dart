@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gosol_tracker_app/Controller/gosol_controller.dart';
+import 'package:gosol_tracker_app/Pages/about_page.dart';
+import 'package:gosol_tracker_app/Pages/edit_profile_page.dart';
 import 'package:gosol_tracker_app/Pages/empty_page.dart';
 import 'package:gosol_tracker_app/Pages/enter_new_gosol.dart';
 import 'package:gosol_tracker_app/Pages/gosol_list_page.dart';
@@ -16,9 +18,14 @@ class DashboardPage extends StatelessWidget {
 
   final theme = MyTheme.light();
 
+  final loadedNum = 7.obs;
+
   GosolController controller = Get.find();
 
   DateFormat f = DateFormat("EEE d-MMM \nh:mm a");
+
+  DateFormat fD = DateFormat("EEE d-MMM");
+  DateFormat fT = DateFormat("h:mm a");
 
   int getUnday() {
     if (controller.gosolList.isNotEmpty) {
@@ -118,19 +125,20 @@ class DashboardPage extends StatelessWidget {
                     height: 50,
                   ),
                   Center(
-                    child: Obx(() => ClipRRect(
-                              borderRadius: BorderRadius.circular(30.0),
-                              child: Container(
-                                width: double.infinity,
-                                height: 100,
-                                color: const Color(0xFFdcedc8),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      children: [
+                    child: Obx(
+                      () => ClipRRect(
+                        borderRadius: BorderRadius.circular(30.0),
+                        child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          color: const Color(0xFFdcedc8),
+                          child: Column(
+                            children: [
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                children: [
                                   const SizedBox(
                                     width: 15,
                                   ),
@@ -143,12 +151,12 @@ class DashboardPage extends StatelessWidget {
                                     style: theme.textTheme.headline3,
                                   ),
                                 ],
-                                    ),
-                                    const SizedBox(
+                              ),
+                              const SizedBox(
                                 height: 10,
                               ),
-                                    Row(
-                                      children: [
+                              Row(
+                                children: [
                                   const SizedBox(
                                     width: 15,
                                   ),
@@ -194,75 +202,106 @@ class DashboardPage extends StatelessWidget {
           ),
           Flexible(
             child: Obx(
-              () => Timeline.tileBuilder(
-                theme: TimelineThemeData(
-                  connectorTheme: const ConnectorThemeData(
-                    thickness: 3.0,
+              () => ListView(shrinkWrap: true, children: [
+                Timeline.tileBuilder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  theme: TimelineThemeData(
+                    connectorTheme: const ConnectorThemeData(
+                      thickness: 3.0,
+                    ),
+                    indicatorTheme: const IndicatorThemeData(
+                      size: 15.0,
+                    ),
                   ),
-                  indicatorTheme: const IndicatorThemeData(
-                    size: 15.0,
-                  ),
-                ),
-                builder: TimelineTileBuilder.connected(
-                  itemCount: controller.gosolList.value.length,
-                  contentsAlign: ContentsAlign.basic,
-                  contentsBuilder: (context, index) {
-                    int dateToday = DateTime.fromMicrosecondsSinceEpoch(
-                            controller.gosolList.value[index].datetime!)
-                        .day;
+                  builder: TimelineTileBuilder.connected(
+                    itemCount: controller.gosolList.value.length,
+                    contentsAlign: ContentsAlign.basic,
+                    contentsBuilder: (context, index) {
+                      int dateToday = DateTime.fromMicrosecondsSinceEpoch(
+                              controller.gosolList.value[index].datetime!)
+                          .day;
 
-                    int datePrev = DateTime.fromMicrosecondsSinceEpoch(
-                            controller.gosolList
-                                .value[index == 0 ? 0 : index - 1].datetime!)
-                        .day;
+                      int datePrev = DateTime.fromMicrosecondsSinceEpoch(
+                              controller.gosolList
+                                  .value[index == 0 ? 0 : index - 1].datetime!)
+                          .day;
 
-                    return SizedBox(
-                      height: 100,
-                      width: 400,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 40, 0, 0),
-                        child: Text(
-                            "UnGosoled For: \n${dateToday - datePrev} Days"),
-                      ),
-                    );
-                  },
-                  oppositeContentsBuilder: (context, index) {
-                    final gosol = controller.gosolList.value[index];
-
-                    return Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Card(
+                      return SizedBox(
+                        height: 100,
+                        width: 400,
                         child: Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Text(f.format(
-                              DateTime.fromMicrosecondsSinceEpoch(
-                                  gosol.datetime!))),
+                          padding: const EdgeInsets.fromLTRB(15, 40, 0, 0),
+                          child: Text(
+                              "UnGosoled For: \n${dateToday - datePrev} Days"),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                    oppositeContentsBuilder: (context, index) {
+                      final gosol = controller.gosolList.value[index];
 
-                  connectorBuilder: (_, index, __) => const SolidLineConnector(
-                    color: Color(0xff64dd17),
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Card(
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  fD.format(DateTime.fromMicrosecondsSinceEpoch(
+                                      gosol.datetime!)),
+                                  style: theme.textTheme.headline2,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  fT.format(DateTime.fromMicrosecondsSinceEpoch(
+                                      gosol.datetime!)),
+                                  style: theme.textTheme.headline5,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+
+                    connectorBuilder: (_, index, __) =>
+                        const SolidLineConnector(
+                      color: Color(0xff64dd17),
+                    ),
+
+                    indicatorBuilder: (_, index) => const DotIndicator(
+                      color: Color(0xff64dd17),
+                    ),
+
+                    itemExtentBuilder: (_, __) {
+                      return 100.0;
+                    },
+                    // indicatorStyle: IndicatorStyle.container,
+                    // connectorStyle: ConnectorStyle.solidLine,
+
+                    // connectorStyleBuilder: (context, index) {
+                    //   return ConnectorStyle.solidLine;
+                    // },
+                    // indicatorStyleBuilder: (context, index) =>
+                    // IndicatorStyle.dot,
                   ),
-
-                  indicatorBuilder: (_, index) => const DotIndicator(
-                    color: Color(0xff64dd17),
-                  ),
-
-                  itemExtentBuilder: (_, __) {
-                    return 100.0;
-                  },
-                  // indicatorStyle: IndicatorStyle.container,
-                  // connectorStyle: ConnectorStyle.solidLine,
-
-                  // connectorStyleBuilder: (context, index) {
-                  //   return ConnectorStyle.solidLine;
-                  // },
-                  // indicatorStyleBuilder: (context, index) =>
-                  // IndicatorStyle.dot,
                 ),
-              ),
+                SizedBox(
+                    height: 30,
+                    width: 40,
+                    child: TextButton(
+                        onPressed: () {},
+                        child: const Text("end of the list",
+                            style: TextStyle(
+                                fontSize: 14, color: Color(0xff64dd17))))),
+              ]),
+
+              //
             ),
           ),
         ],
@@ -282,9 +321,14 @@ class DashboardPage extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const ListTile(
-              leading: Icon(Icons.person_outline),
-              title: Text("Edit Profile"),
+            InkWell(
+              onTap: () {
+                Get.to(() => EditProfile());
+              },
+              child: const ListTile(
+                leading: Icon(Icons.person_outline),
+                title: Text("Edit Profile"),
+              ),
             ),
             InkWell(
               onTap: () {
@@ -295,9 +339,21 @@ class DashboardPage extends StatelessWidget {
                 title: Text("Gosol List"),
               ),
             ),
-            const ListTile(
-              leading: Icon(Icons.access_time_outlined),
-              title: Text("Set Gosol Alerm"),
+            InkWell(
+              onTap: () {
+                Get.to(() => EnterNewGosol());
+              },
+              child: const ListTile(
+                leading: Icon(Icons.add_box_outlined),
+                title: Text("Add Gosol"),
+              ),
+            ),
+            InkWell(
+              onTap: () {},
+              child: const ListTile(
+                leading: Icon(Icons.access_time_outlined),
+                title: Text("Set Gosol Remainder"),
+              ),
             ),
             InkWell(
               onTap: () {
@@ -308,9 +364,14 @@ class DashboardPage extends StatelessWidget {
                 title: Text("Blog"),
               ),
             ),
-            const ListTile(
-              leading: Icon(Icons.info_outline),
-              title: Text("About"),
+            InkWell(
+              onTap: () {
+                Get.to(() => AboutPage());
+              },
+              child: const ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text("About"),
+              ),
             ),
           ],
         ),
@@ -368,4 +429,3 @@ class DashboardPage extends StatelessWidget {
     );
   }
 }
-

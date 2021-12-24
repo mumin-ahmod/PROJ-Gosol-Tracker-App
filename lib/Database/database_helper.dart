@@ -1,27 +1,44 @@
 import 'package:gosol_tracker_app/Model/gosol_model.dart';
+import 'package:gosol_tracker_app/Model/profile_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqlbrite/sqlbrite.dart';
 
 import 'package:path/path.dart' as path;
 
 class DatabaseHelper {
-  static const tableName = "gosoltable";
   static const databaseVersion = 1;
+
+  static const tableName = "gosoltable";
 
   static const idColumn = "id";
   static const datetimeColumn = "datetime";
   static const temperatureColumn = "temp";
 
+  static const profileTable = "profiletable";
+
+  static const idProfileColumn = "id";
+  static const nameColumn = "name";
+  static const image64bitColumn = "image64bit";
+
   static Database? _database;
   static late BriteDatabase _streamDatabase;
 
   // DATABASE CREATE QUERY
-  static Future _onCreate(Database db, int version) {
-    return db.execute("""CREATE TABLE $tableName (
+  static Future _onCreate(Database db, int version) async {
+    await db.execute("""CREATE TABLE $tableName (
     $idColumn INTEGER PRIMARY KEY AUTOINCREMENT,
     $datetimeColumn INTEGER,
     $temperatureColumn REAL
     )""");
+
+    await db.execute("""
+    CREATE TABLE $profileTable(
+    $idProfileColumn INTEGER PRIMARY KEY AUTOINCREMENT,
+    $nameColumn TEXT,
+    $image64bitColumn TEXT
+    
+    )    
+    """);
   }
 
   // OPENING THE DATABASE
@@ -82,5 +99,23 @@ class DatabaseHelper {
     print("ROW DELETED");
 
     return briteDb.delete(tableName, where: "id = ?", whereArgs: [id]);
+  }
+
+  static Future insertProfile(Map<String, dynamic> row) async {
+    final briteDb = await DatabaseHelper.streamDatabase;
+
+    print("PROFILE ROW INSERTED");
+    return await briteDb.insert(profileTable, row);
+  }
+
+  static Stream<List<ProfileModel>> getAllProfile() async* {
+    final briteDb = await DatabaseHelper.streamDatabase;
+    // List<Map<String, dynamic>> mapList = await briteDb.query(profileTable);
+    // return List.generate(
+    //     mapList.length, (index) => ProfileModel.fromMap(mapList[index]));
+    print("PROFILE GOT");
+    yield* briteDb
+        .createQuery(profileTable)
+        .mapToList((row) => ProfileModel.fromMap(row));
   }
 }
