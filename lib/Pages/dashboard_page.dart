@@ -48,26 +48,26 @@ class DashboardPage extends StatelessWidget {
 
       for (int i = 1; i < length; i++) {
         if ((DateTime.fromMicrosecondsSinceEpoch(
-            controller.gosolList.value[i].datetime!)
-            .day -
-            DateTime.fromMicrosecondsSinceEpoch(
-                controller.gosolList.value[i - 1].datetime!)
-                .day) ==
+                        controller.gosolList.value[i].datetime!)
+                    .day -
+                DateTime.fromMicrosecondsSinceEpoch(
+                        controller.gosolList.value[i - 1].datetime!)
+                    .day) ==
             1) {
           cont++;
         } else if ((DateTime.fromMicrosecondsSinceEpoch(
-            controller.gosolList.value[i].datetime!)
-            .day ==
+                    controller.gosolList.value[i].datetime!)
+                .day ==
             DateTime.fromMicrosecondsSinceEpoch(
-                controller.gosolList.value[i - 1].datetime!)
+                    controller.gosolList.value[i - 1].datetime!)
                 .day)) {
           cont = cont;
         } else if (i + 1 < length) {
           if ((DateTime.fromMicrosecondsSinceEpoch(
-              controller.gosolList.value[i].datetime!)
-              .day ==
+                      controller.gosolList.value[i].datetime!)
+                  .day ==
               DateTime.fromMicrosecondsSinceEpoch(
-                  controller.gosolList.value[i + 1].datetime!)
+                      controller.gosolList.value[i + 1].datetime!)
                   .day)) {
             cont = cont;
           }
@@ -118,62 +118,75 @@ class DashboardPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: SizedBox(
-              height: 250,
-              width: 400,
+              height: 270,
+              width: double.infinity,
               child: Column(
                 children: [
                   _buildProfile(),
                   const SizedBox(
-                    height: 50,
+                    height: 30,
                   ),
-                  Center(
-                    child: Obx(
-                          () => ClipRRect(
-                        borderRadius: BorderRadius.circular(30.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: 100,
-                          color: const Color(0xFFdcedc8),
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 15,
+                  Obx(
+                    () => Center(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              flex: 3,
+                              fit: FlexFit.loose,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Container(
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.calendar_today_outlined),
+                                        SizedBox(
+                                          width: 12,
+                                        ),
+                                        Text(
+                                          "গোসল করেছেনঃ ",
+                                          style: theme.textTheme.headline2,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xFFdcedc8),
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10.0),
+                                        bottomLeft: Radius.circular(10.0),
+                                      )),
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  const Icon(Icons.date_range),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Text(
-                                    "Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
-                                    style: theme.textTheme.headline3,
-                                  ),
-                                ],
+                            ),
+                            Flexible(
+                              flex: 2,
+                              fit: FlexFit.loose,
+                              child: Container(
+                                height: 60,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20),
+                                  child: Text(
+                                      " ${getUnday() == 0 ? 'আজকেই!' : getUnday().toString() + ' দিন আগে.'}",
+                                      style: theme.textTheme.headline2),
+                                ),
+                                decoration: const BoxDecoration(
+                                    color: Color(0xFFdcedc8),
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10.0),
+                                      bottomRight: Radius.circular(10.0),
+                                    )),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  const Icon(Icons.repeat),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Text(
-                                    "Ektana Gosol: ${getContDay() == 1 ? 0 : getContDay()} Days! ",
-                                    style: theme.textTheme.headline3,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       //
@@ -184,6 +197,73 @@ class DashboardPage extends StatelessWidget {
                       // ),
                     ),
                   ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            flex: 3,
+                            fit: FlexFit.loose,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Container(
+                                height: 60,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.calendar_today_outlined),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Text("একটানা গোসলঃ ",
+                                          style: theme.textTheme.headline2),
+                                    ],
+                                  ),
+                                ),
+                                decoration: const BoxDecoration(
+                                    color: Color(0xFFdcedc8),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10.0),
+                                      bottomLeft: Radius.circular(10.0),
+                                    )),
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 2,
+                            fit: FlexFit.loose,
+                            child: Container(
+                              height: 60,
+                              width: double.infinity,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Text(
+                                    " ${getContDay() == 1 ? 0 : getContDay()} দিন.",
+                                    style: theme.textTheme.headline2),
+                              ),
+                              decoration: const BoxDecoration(
+                                  color: Color(0xFFdcedc8),
+                                  borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //
+                    //     Text(
+                    //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                    //   style: theme.textTheme.headline3,
+                    //   textAlign: TextAlign.center,
+                    // ),
+                  )
                 ],
               ),
             ),
@@ -195,12 +275,12 @@ class DashboardPage extends StatelessWidget {
               style: GoogleFonts.encodeSans(
                   fontSize: 20,
                   color: Colors.black87,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   letterSpacing: 5),
             ),
           ),
           const SizedBox(
-            height: 10,
+            height: 15,
           ),
           Flexible(
             child: Obx(
@@ -457,15 +537,15 @@ class DashboardPage extends StatelessWidget {
                               Icons.location_on,
                               size: 18,
                             ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        controller.currentCity.value,
-                        style: theme.textTheme.headline2,
-                      ),
-                    ],
-                  )
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              controller.currentCity.value,
+                              style: theme.textTheme.headline2,
+                            ),
+                          ],
+                        )
                       : Container(),
                 ),
               ],
