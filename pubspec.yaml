@@ -43,6 +43,7 @@ dependencies:
   geolocator: ^8.0.1
   geocode: ^1.0.1
   image_picker: ^0.8.4+4
+  synchronized: ^3.0.0
 
 
 dev_dependencies:

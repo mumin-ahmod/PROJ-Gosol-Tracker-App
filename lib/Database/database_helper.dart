@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqlbrite/sqlbrite.dart';
 
 import 'package:path/path.dart' as path;
+import 'package:synchronized/synchronized.dart';
 
 class DatabaseHelper {
   static const databaseVersion = 1;
@@ -22,6 +23,8 @@ class DatabaseHelper {
 
   static Database? _database;
   static late BriteDatabase _streamDatabase;
+
+  static var lock = Lock();
 
   // DATABASE CREATE QUERY
   static Future _onCreate(Database db, int version) async {
@@ -56,12 +59,13 @@ class DatabaseHelper {
   static get database async {
     if (_database != null) return _database;
 
-    if (_database == null) {
-      _database = await open();
+    await lock.synchronized(() async {
+      if (_database == null) {
+        _database = await open();
 
-      _streamDatabase = BriteDatabase((_database!));
-    }
-
+        _streamDatabase = BriteDatabase((_database!));
+      }
+    });
     return _database;
   }
 
@@ -86,7 +90,6 @@ class DatabaseHelper {
     // return List.generate(
     //     mapList.length, (index) => GosolModel.fromMap(mapList[index]));
 
-    ///yield* db.createQuery(tableName).forEach((map) => map(Map<String, dynamic> map)=> GosolModel.fromMap(map));
 
     yield* briteDb
         .createQuery(tableName, orderBy: datetimeColumn)

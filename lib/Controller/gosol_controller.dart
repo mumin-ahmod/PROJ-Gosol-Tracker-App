@@ -22,6 +22,7 @@ class GosolController extends GetxController {
     await getCity();
 
     gosolList.bindStream(DatabaseHelper.getAllGosols());
+
     profileList.bindStream(DatabaseHelper.getAllProfile());
 
     await createDefaultTable();
