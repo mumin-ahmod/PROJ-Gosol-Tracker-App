@@ -43,14 +43,14 @@ class EditProfile extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Obx(
-        () => Center(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 100,
-              ),
-              Row(
+      body: Center(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 100,
+            ),
+            Obx(
+              () => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CircleAvatar(
@@ -68,10 +68,12 @@ class EditProfile extends StatelessWidget {
                       icon: Icon(Icons.edit_outlined)),
                 ],
               ),
-              const SizedBox(
-                height: 50,
-              ),
-              Row(
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Obx(
+              () => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   isEditing.value
@@ -96,33 +98,35 @@ class EditProfile extends StatelessWidget {
                       icon: const Icon(Icons.edit_outlined)),
                 ],
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (image64 != null) {
-                    DatabaseHelper.updateProfile(ProfileModel(
-                      id: controller.profileList[0].id,
-                      name: controller.profileList[0].name,
-                      image64bit: image64,
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (image64 != null) {
+                  DatabaseHelper.updateProfile(ProfileModel(
+                    id: controller.profileList[0].id,
+                    name: controller.profileList[0].name,
+                    image64bit: image64,
                     ));
                   }
 
                   if (nameController.text.isNotEmpty) {
-                    DatabaseHelper.updateProfile(ProfileModel(
-                      id: controller.profileList[0].id,
-                      name: nameController.text,
-                      image64bit: controller.profileList[0].image64bit,
-                    ));
+                  DatabaseHelper.updateProfile(ProfileModel(
+                    id: controller.profileList[0].id,
+                    name: nameController.text,
+                    image64bit: controller.profileList[0].image64bit,
+                  ));
 
-                    print("CONTROLLER TEXT: ${nameController.text}");
-                  }
+                  print("CONTROLLER TEXT: ${nameController.text}");
+                }
 
-                  isEditing.value = false;
-                  print("NAME::: ${controller.profileList.value[0].name}");
-                  print("ID::: ${controller.profileList.value[0].id}");
-                },
+                isEditing.value = false;
+                nameController.clear();
+                print("NAME::: ${controller.profileList.value[0].name}");
+                print("ID::: ${controller.profileList.value[0].id}");
+              },
                 child: const Text("Save"),
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -133,7 +137,6 @@ class EditProfile extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }
