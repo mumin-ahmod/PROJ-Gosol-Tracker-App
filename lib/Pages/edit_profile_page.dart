@@ -102,7 +102,7 @@ class EditProfile extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 100,
             ),
             ElevatedButton(
               onPressed: () {
@@ -132,9 +132,9 @@ class EditProfile extends StatelessWidget {
                 child: const Text("Save"),
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  primary: const Color(0xff62ddfc),
-                ),
+                    borderRadius: BorderRadius.circular(12)),
+                primary: Colors.black54,
+              ),
               ),
             ],
           ),

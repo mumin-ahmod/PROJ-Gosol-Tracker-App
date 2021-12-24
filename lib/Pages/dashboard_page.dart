@@ -221,21 +221,44 @@ class DashboardPage extends StatelessWidget {
                     contentsAlign: ContentsAlign.basic,
                     contentsBuilder: (context, index) {
                       int dateToday = DateTime.fromMicrosecondsSinceEpoch(
-                          controller.gosolList.value[index].datetime!)
+                              controller.gosolList.value[index].datetime!)
                           .day;
 
                       int datePrev = DateTime.fromMicrosecondsSinceEpoch(
-                          controller.gosolList
-                              .value[index == 0 ? 0 : index - 1].datetime!)
+                              controller.gosolList
+                                  .value[index == 0 ? 0 : index - 1].datetime!)
                           .day;
 
-                      return SizedBox(
-                        height: 100,
-                        width: 400,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 40, 0, 0),
-                          child: Text(
-                              "UnGosoled For: \n${dateToday - datePrev} Days"),
+                      int diffDay = dateToday - datePrev;
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Color(0xFFf1f8e9),
+                          ),
+                          height: 100,
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("${diffDay} দিন"),
+                                    const Text("পরে"),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 80,
+                                  width: 60,
+                                  child: _iconBuilder(diffDay),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -244,27 +267,32 @@ class DashboardPage extends StatelessWidget {
 
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: Card(
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  fD.format(DateTime.fromMicrosecondsSinceEpoch(
-                                      gosol.datetime!)),
-                                  style: theme.textTheme.headline2,
-                                ),
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  fT.format(DateTime.fromMicrosecondsSinceEpoch(
-                                      gosol.datetime!)),
-                                  style: theme.textTheme.headline5,
-                                ),
-                              ],
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Card(
+                            child: Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    fD.format(
+                                        DateTime.fromMicrosecondsSinceEpoch(
+                                            gosol.datetime!)),
+                                    style: theme.textTheme.headline2,
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    fT.format(
+                                        DateTime.fromMicrosecondsSinceEpoch(
+                                            gosol.datetime!)),
+                                    style: theme.textTheme.headline5,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -309,6 +337,18 @@ class DashboardPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _iconBuilder(int diffNum) {
+    if (diffNum <= 1) {
+      return Image.asset("asset/c1.png");
+    } else if (diffNum == 2) {
+      return Image.asset("asset/c2.png");
+    } else if (diffNum >= 3) {
+      return Image.asset("asset/c3.png");
+    } else {
+      return Container();
+    }
   }
 
   Drawer buildDrawer() {
