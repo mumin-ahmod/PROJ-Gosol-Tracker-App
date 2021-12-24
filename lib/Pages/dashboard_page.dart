@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,26 +48,26 @@ class DashboardPage extends StatelessWidget {
 
       for (int i = 1; i < length; i++) {
         if ((DateTime.fromMicrosecondsSinceEpoch(
-                        controller.gosolList.value[i].datetime!)
-                    .day -
-                DateTime.fromMicrosecondsSinceEpoch(
-                        controller.gosolList.value[i - 1].datetime!)
-                    .day) ==
+            controller.gosolList.value[i].datetime!)
+            .day -
+            DateTime.fromMicrosecondsSinceEpoch(
+                controller.gosolList.value[i - 1].datetime!)
+                .day) ==
             1) {
           cont++;
         } else if ((DateTime.fromMicrosecondsSinceEpoch(
-                    controller.gosolList.value[i].datetime!)
-                .day ==
+            controller.gosolList.value[i].datetime!)
+            .day ==
             DateTime.fromMicrosecondsSinceEpoch(
-                    controller.gosolList.value[i - 1].datetime!)
+                controller.gosolList.value[i - 1].datetime!)
                 .day)) {
           cont = cont;
         } else if (i + 1 < length) {
           if ((DateTime.fromMicrosecondsSinceEpoch(
-                      controller.gosolList.value[i].datetime!)
-                  .day ==
+              controller.gosolList.value[i].datetime!)
+              .day ==
               DateTime.fromMicrosecondsSinceEpoch(
-                      controller.gosolList.value[i + 1].datetime!)
+                  controller.gosolList.value[i + 1].datetime!)
                   .day)) {
             cont = cont;
           }
@@ -126,7 +128,7 @@ class DashboardPage extends StatelessWidget {
                   ),
                   Center(
                     child: Obx(
-                      () => ClipRRect(
+                          () => ClipRRect(
                         borderRadius: BorderRadius.circular(30.0),
                         child: Container(
                           width: double.infinity,
@@ -202,7 +204,7 @@ class DashboardPage extends StatelessWidget {
           ),
           Flexible(
             child: Obx(
-              () => ListView(shrinkWrap: true, children: [
+                  () => ListView(shrinkWrap: true, children: [
                 Timeline.tileBuilder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -219,12 +221,12 @@ class DashboardPage extends StatelessWidget {
                     contentsAlign: ContentsAlign.basic,
                     contentsBuilder: (context, index) {
                       int dateToday = DateTime.fromMicrosecondsSinceEpoch(
-                              controller.gosolList.value[index].datetime!)
+                          controller.gosolList.value[index].datetime!)
                           .day;
 
                       int datePrev = DateTime.fromMicrosecondsSinceEpoch(
-                              controller.gosolList
-                                  .value[index == 0 ? 0 : index - 1].datetime!)
+                          controller.gosolList
+                              .value[index == 0 ? 0 : index - 1].datetime!)
                           .day;
 
                       return SizedBox(
@@ -270,7 +272,7 @@ class DashboardPage extends StatelessWidget {
                     },
 
                     connectorBuilder: (_, index, __) =>
-                        const SolidLineConnector(
+                    const SolidLineConnector(
                       color: Color(0xff64dd17),
                     ),
 
@@ -383,12 +385,15 @@ class DashboardPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 6.0),
       child: Obx(
-        () => Row(
+            () => Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const CircleAvatar(
-              backgroundImage: NetworkImage(
-                  "https://png.pngtree.com/png-vector/20190120/ourlarge/pngtree-man-vector-icon-png-image_470295.jpg"),
+            CircleAvatar(
+              backgroundImage: controller.profileList.isNotEmpty
+                  ? Image.memory(const Base64Decoder()
+                          .convert(controller.profileList.value[0].image64bit!))
+                      .image
+                  : AssetImage("asset/male.png"),
               radius: 35,
             ),
             const SizedBox(
@@ -398,7 +403,9 @@ class DashboardPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Mumin Ahmod",
+                  controller.profileList.isNotEmpty
+                      ? controller.profileList[0].name!
+                      : "Your Name",
                   style: theme.textTheme.headline1,
                 ),
                 Padding(
@@ -410,15 +417,15 @@ class DashboardPage extends StatelessWidget {
                               Icons.location_on,
                               size: 18,
                             ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              controller.currentCity.value,
-                              style: theme.textTheme.headline2,
-                            ),
-                          ],
-                        )
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        controller.currentCity.value,
+                        style: theme.textTheme.headline2,
+                      ),
+                    ],
+                  )
                       : Container(),
                 ),
               ],

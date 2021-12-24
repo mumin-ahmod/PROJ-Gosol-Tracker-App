@@ -42,6 +42,8 @@ class EditProfile extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        title: const Text("Edit Profile"),
+        centerTitle: true,
       ),
       body: Center(
         child: Column(

@@ -21,10 +21,10 @@ class GosolController extends GetxController {
   void onInit() async {
     await getCity();
 
-    await createDefaultTable();
-
     gosolList.bindStream(DatabaseHelper.getAllGosols());
     profileList.bindStream(DatabaseHelper.getAllProfile());
+
+    await createDefaultTable();
 
     super.onInit();
   }
@@ -79,9 +79,10 @@ class GosolController extends GetxController {
   }
 
   createDefaultTable() async {
-    if (profileList.value.isEmpty) {
+    if (profileList.isEmpty) {
       var obj = await ProfileModel.create();
 
+      print("PROFILE LENGTH: ${profileList.length}");
       DatabaseHelper.insertProfile(obj.toMap());
     }
   }

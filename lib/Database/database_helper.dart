@@ -104,7 +104,7 @@ class DatabaseHelper {
   static Future insertProfile(Map<String, dynamic> row) async {
     final briteDb = await DatabaseHelper.streamDatabase;
 
-    print("PROFILE ROW INSERTED");
+    print("PROFILE DEFAULT ROW INSERTED");
     return await briteDb.insert(profileTable, row);
   }
 
