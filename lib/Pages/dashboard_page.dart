@@ -504,7 +504,10 @@ class DashboardPage extends StatelessWidget {
             const SizedBox(
               height: 200,
             ),
-            _buildProfile(),
+            SizedBox(
+              width: double.infinity,
+              child: _buildProfile(),
+            ),
             const SizedBox(
               height: 20,
             ),
@@ -587,11 +590,15 @@ class DashboardPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  controller.profileList.isNotEmpty
-                      ? controller.profileList[0].name!
-                      : "Your Name",
-                  style: theme.textTheme.headline1,
+                SizedBox(
+                  width: 200,
+                  child: Text(
+                    controller.profileList.isNotEmpty
+                        ? controller.profileList[0].name!
+                        : "Your Name",
+                    style: theme.textTheme.headline1,
+                    overflow: TextOverflow.clip,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),

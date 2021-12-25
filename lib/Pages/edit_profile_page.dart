@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:gosol_tracker_app/Controller/gosol_controller.dart';
 import 'package:gosol_tracker_app/Database/database_helper.dart';
@@ -14,18 +15,19 @@ class EditProfile extends StatelessWidget {
   EditProfile({Key? key}) : super(key: key);
 
   final theme = MyTheme.light();
+  final _formKey = GlobalKey<FormState>();
 
   final isEditing = false.obs;
 
   GosolController controller = Get.find();
 
-  String? image64;
+  Rxn<String> image64 = Rxn<String>();
 
   final nameController = TextEditingController();
 
   Future<String> pickImage() async {
     var image = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 30);
+        .pickImage(source: ImageSource.gallery, imageQuality: 25);
 
     var imageBytes = await image!.readAsBytes();
 
@@ -55,19 +57,28 @@ class EditProfile extends StatelessWidget {
               () => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  CircleAvatar(
-                    backgroundImage: controller.profileList.value.isNotEmpty
-                        ? Image.memory(Base64Decoder().convert(
-                                controller.profileList.value[0].image64bit!))
-                            .image
-                        : AssetImage("asset/male.png"),
-                    radius: 80,
-                  ),
+                  image64.value != null
+                      ? CircleAvatar(
+                          backgroundImage: Image.memory(
+                                  const Base64Decoder().convert(image64.value!))
+                              .image,
+                          radius: 80,
+                        )
+                      : CircleAvatar(
+                          backgroundImage:
+                              controller.profileList.value.isNotEmpty
+                                  ? Image.memory(const Base64Decoder().convert(
+                                          controller.profileList.value[0]
+                                              .image64bit!))
+                                      .image
+                                  : const AssetImage("asset/male.png"),
+                          radius: 80,
+                        ),
                   IconButton(
                       onPressed: () async {
-                        image64 = await pickImage();
+                        image64.value = await pickImage();
                       },
-                      icon: Icon(Icons.edit_outlined)),
+                      icon: const Icon(Icons.edit_outlined)),
                 ],
               ),
             ),
@@ -75,51 +86,74 @@ class EditProfile extends StatelessWidget {
               height: 50,
             ),
             Obx(
-              () => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  isEditing.value
-                      ? SizedBox(
-                          width: 200,
-                          child: TextFormField(
-                            controller: nameController,
-                            decoration:
-                                const InputDecoration(labelText: "Enter Name"),
+              () => Flexible(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    isEditing.value
+                        ? SizedBox(
+                            width: 200,
+                            child: Form(
+                              key: _formKey,
+                              child: TextFormField(
+                                controller: nameController,
+                                decoration: const InputDecoration(
+                                    hintText: "Nick Name"),
+                                validator: (text) {
+                                  if (text!.isEmpty || text.length > 20) {
+                                    return "Name Must be Less then 20 Characters";
+                                  }
+                                },
+                              ),
+                            ),
+                          )
+                        : SizedBox(
+                            width: 200,
+                            child: Text(
+                              controller.profileList.value.isNotEmpty
+                                  ? controller.profileList.value[0].name!
+                                  : "Your Name",
+                              style: theme.textTheme.headline1,
+                              overflow: TextOverflow.clip,
+                            ),
                           ),
-                        )
-                      : Text(
-                          controller.profileList.value.isNotEmpty
-                              ? controller.profileList.value[0].name!
-                              : "Your Name",
-                          style: theme.textTheme.headline1,
-                        ),
-                  IconButton(
-                      onPressed: () {
-                        isEditing.value = true;
-                      },
-                      icon: const Icon(Icons.edit_outlined)),
-                ],
+                    IconButton(
+                        onPressed: () {
+                          isEditing.value = true;
+                        },
+                        icon: const Icon(Icons.edit_outlined)),
+                  ],
+                ),
               ),
             ),
             const SizedBox(
               height: 100,
             ),
             ElevatedButton(
-              onPressed: () {
-                if (image64 != null) {
-                  DatabaseHelper.updateProfile(ProfileModel(
+              onPressed: () async {
+                if (image64.value != null) {
+                  await DatabaseHelper.updateProfile(ProfileModel(
                     id: controller.profileList[0].id,
                     name: controller.profileList[0].name,
-                    image64bit: image64,
-                    ));
-                  }
-
-                  if (nameController.text.isNotEmpty) {
-                  DatabaseHelper.updateProfile(ProfileModel(
-                    id: controller.profileList[0].id,
-                    name: nameController.text,
-                    image64bit: controller.profileList[0].image64bit,
+                    image64bit: image64.value,
                   ));
+
+                  Fluttertoast.showToast(msg: "Saved!");
+                  image64.value = null;
+                }
+
+                if (nameController.text.isNotEmpty) {
+                  if (_formKey.currentState!.validate()) {
+                    DatabaseHelper.updateProfile(ProfileModel(
+                      id: controller.profileList[0].id,
+                      name: nameController.text,
+                      image64bit: controller.profileList[0].image64bit,
+                    ));
+                    Fluttertoast.showToast(msg: "Saved!");
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: "Name must be Less then 20 Characters long");
+                  }
 
                   print("CONTROLLER TEXT: ${nameController.text}");
                 }
@@ -129,16 +163,16 @@ class EditProfile extends StatelessWidget {
                 print("NAME::: ${controller.profileList.value[0].name}");
                 print("ID::: ${controller.profileList.value[0].id}");
               },
-                child: const Text("Save"),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
+              child: const Text("Save"),
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
                 primary: Colors.black54,
               ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:gosol_tracker_app/Controller/gosol_controller.dart';
 import 'package:gosol_tracker_app/Database/database_helper.dart';
@@ -47,7 +48,7 @@ class EnterNewGosol extends StatelessWidget {
                   height: 80,
                 ),
                 Text(
-                  "Add New Gosol",
+                  "Add A Shower",
                   style: theme.textTheme.headline3,
                 ),
                 const SizedBox(
@@ -187,7 +188,9 @@ class EnterNewGosol extends StatelessWidget {
                                 .microsecondsSinceEpoch;
 
                             DatabaseHelper.insertGosol(
-                                GosolModel(datetime: gosolTime).toMap());
+                                    GosolModel(datetime: gosolTime).toMap())
+                                .then((value) =>
+                                    Fluttertoast.showToast(msg: "Saved!"));
 
                             Get.back();
                           },
