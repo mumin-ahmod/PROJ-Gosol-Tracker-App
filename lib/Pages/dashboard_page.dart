@@ -256,72 +256,74 @@ class DashboardPage extends StatelessWidget {
                         // ),
                       ),
                     ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              flex: 3,
-                              fit: FlexFit.loose,
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 8),
+                    Obx(
+                      () => Center(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                flex: 3,
+                                fit: FlexFit.loose,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: Container(
+                                    height: 60,
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.repeat),
+                                          const SizedBox(
+                                            width: 12,
+                                          ),
+                                          Text("একটানা গোসলঃ ",
+                                              style: theme.textTheme.headline2),
+                                        ],
+                                      ),
+                                    ),
+                                    decoration: const BoxDecoration(
+                                        color: Color(0xFFdcedc8),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10.0),
+                                          bottomLeft: Radius.circular(10.0),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 2,
+                                fit: FlexFit.loose,
                                 child: Container(
                                   height: 60,
                                   width: double.infinity,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        const Icon(Icons.repeat),
-                                        const SizedBox(
-                                          width: 12,
-                                        ),
-                                        Text("একটানা গোসলঃ ",
-                                            style: theme.textTheme.headline2),
-                                      ],
-                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    child: Text(
+                                        " ${getContDay() == 1 ? 0 : getContDay()} দিন.",
+                                        style: theme.textTheme.headline2),
                                   ),
                                   decoration: const BoxDecoration(
                                       color: Color(0xFFdcedc8),
                                       borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10.0),
-                                        bottomLeft: Radius.circular(10.0),
+                                        topRight: Radius.circular(10.0),
+                                        bottomRight: Radius.circular(10.0),
                                       )),
                                 ),
                               ),
-                            ),
-                            Flexible(
-                              flex: 2,
-                              fit: FlexFit.loose,
-                              child: Container(
-                                height: 60,
-                                width: double.infinity,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 20),
-                                  child: Text(
-                                      " ${getContDay() == 1 ? 0 : getContDay()} দিন.",
-                                      style: theme.textTheme.headline2),
-                                ),
-                                decoration: const BoxDecoration(
-                                    color: Color(0xFFdcedc8),
-                                    borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10.0),
-                                      bottomRight: Radius.circular(10.0),
-                                    )),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        //
+                        //     Text(
+                        //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                        //   style: theme.textTheme.headline3,
+                        //   textAlign: TextAlign.center,
+                        // ),
                       ),
-                      //
-                      //     Text(
-                      //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
-                      //   style: theme.textTheme.headline3,
-                      //   textAlign: TextAlign.center,
-                      // ),
                     )
                   ],
                 ),
