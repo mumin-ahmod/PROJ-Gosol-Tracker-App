@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,9 @@ import 'package:gosol_tracker_app/Pages/empty_page.dart';
 import 'package:gosol_tracker_app/Pages/enter_new_gosol.dart';
 import 'package:gosol_tracker_app/Pages/gosol_list_page.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share/share.dart';
 import 'package:timelines/timelines.dart';
 
 import '../my_theme.dart';
@@ -20,7 +24,11 @@ class DashboardPage extends StatelessWidget {
 
   final theme = MyTheme.light();
 
+  ScreenshotController screenshotController = ScreenshotController();
+
   final loadedNum = 7.obs;
+
+  final fabPressed = false.obs;
 
   GosolController controller = Get.find();
 
@@ -83,53 +91,172 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        leadingWidth: 70,
-        // SPACE BEFORE LEADING ICON / MENU ICON
-        toolbarHeight: 70,
+    return Screenshot(
+      controller: screenshotController,
+      child: Scaffold(
+        appBar: AppBar(
+          titleSpacing: 0,
+          leadingWidth: 70,
+          // SPACE BEFORE LEADING ICON / MENU ICON
+          toolbarHeight: 70,
 
-        iconTheme: const IconThemeData(color: Colors.black54),
-        title: Text(
-          "Shower Tracker",
-          style: theme.textTheme.headline4,
+          iconTheme: const IconThemeData(color: Colors.black54),
+          title: Text(
+            "Shower Tracker",
+            style: theme.textTheme.headline4,
+          ),
+          elevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: IconButton(
+                  onPressed: () {
+                    Get.to(() => EnterNewGosol());
+                  },
+                  icon: const Icon(
+                    Icons.add,
+                    size: 30,
+                    color: Color(0xff64dd17),
+                  )),
+            )
+          ],
         ),
-        elevation: 0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: IconButton(
-                onPressed: () {
-                  Get.to(() => EnterNewGosol());
-                },
-                icon: const Icon(
-                  Icons.add,
-                  size: 30,
-                  color: Color(0xff64dd17),
-                )),
-          )
-        ],
-      ),
-      drawer: buildDrawer(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: SizedBox(
-              height: 270,
-              width: double.infinity,
-              child: Column(
-                children: [
-                  _buildProfile(),
-                  const SizedBox(
-                    height: 30,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Color(0xFF7da453),
+          onPressed: () {
+            screenshotController.capture().then((var image) {
+              print("PICKED IMAGE: $image");
+
+              var alert = AlertDialog(
+                content: Card(
+                  child: Image.memory(image!),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Cancel"),
                   ),
-                  Obx(
-                    () => Center(
+                  TextButton(
+                    onPressed: () async {
+                      final directory =
+                          await getApplicationDocumentsDirectory();
+                      final imagePath =
+                          await File('${directory.path}/image.png').create();
+                      await imagePath.writeAsBytes(image);
+
+                      /// Share Plugin
+                      await Share.shareFiles([imagePath.path]);
+                    },
+                    child: Text("Share"),
+                  ),
+                ],
+              );
+
+              return showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return alert;
+                  });
+            }).catchError((onError) {
+              print(onError);
+            });
+          },
+          child: const Icon(
+            Icons.camera_alt_outlined,
+            size: 30,
+          ),
+        ),
+        drawer: buildDrawer(),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: SizedBox(
+                height: 270,
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    _buildProfile(),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Obx(
+                      () => Center(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                flex: 3,
+                                fit: FlexFit.loose,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: Container(
+                                    height: 60,
+                                    width: double.infinity,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.date_range),
+                                          const SizedBox(
+                                            width: 12,
+                                          ),
+                                          Text(
+                                            "গোসল করেছেনঃ ",
+                                            style: theme.textTheme.headline2,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    decoration: const BoxDecoration(
+                                        color: Color(0xFFdcedc8),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10.0),
+                                          bottomLeft: Radius.circular(10.0),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 2,
+                                fit: FlexFit.loose,
+                                child: Container(
+                                  height: 60,
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    child: Text(
+                                        " ${getUnday() == 0 ? 'আজকেই!' : getUnday().toString() + ' দিন আগে.'}",
+                                        style: theme.textTheme.headline2),
+                                  ),
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xFFdcedc8),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10.0),
+                                        bottomRight: Radius.circular(10.0),
+                                      )),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        //
+                        //     Text(
+                        //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
+                        //   style: theme.textTheme.headline3,
+                        //   textAlign: TextAlign.center,
+                        // ),
+                      ),
+                    ),
+                    Center(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -145,14 +272,12 @@ class DashboardPage extends StatelessWidget {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Row(
                                       children: [
-                                        Icon(Icons.calendar_today_outlined),
-                                        SizedBox(
+                                        const Icon(Icons.repeat),
+                                        const SizedBox(
                                           width: 12,
                                         ),
-                                        Text(
-                                          "গোসল করেছেনঃ ",
-                                          style: theme.textTheme.headline2,
-                                        ),
+                                        Text("একটানা গোসলঃ ",
+                                            style: theme.textTheme.headline2),
                                       ],
                                     ),
                                   ),
@@ -175,7 +300,7 @@ class DashboardPage extends StatelessWidget {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 20),
                                   child: Text(
-                                      " ${getUnday() == 0 ? 'আজকেই!' : getUnday().toString() + ' দিন আগে.'}",
+                                      " ${getContDay() == 1 ? 0 : getContDay()} দিন.",
                                       style: theme.textTheme.headline2),
                                 ),
                                 decoration: const BoxDecoration(
@@ -195,226 +320,162 @@ class DashboardPage extends StatelessWidget {
                       //   style: theme.textTheme.headline3,
                       //   textAlign: TextAlign.center,
                       // ),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            flex: 3,
-                            fit: FlexFit.loose,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: Container(
-                                height: 60,
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.calendar_today_outlined),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      Text("একটানা গোসলঃ ",
-                                          style: theme.textTheme.headline2),
-                                    ],
-                                  ),
-                                ),
-                                decoration: const BoxDecoration(
-                                    color: Color(0xFFdcedc8),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10.0),
-                                      bottomLeft: Radius.circular(10.0),
-                                    )),
-                              ),
-                            ),
-                          ),
-                          Flexible(
-                            flex: 2,
-                            fit: FlexFit.loose,
-                            child: Container(
-                              height: 60,
-                              width: double.infinity,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                child: Text(
-                                    " ${getContDay() == 1 ? 0 : getContDay()} দিন.",
-                                    style: theme.textTheme.headline2),
-                              ),
-                              decoration: const BoxDecoration(
-                                  color: Color(0xFFdcedc8),
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(10.0),
-                                    bottomRight: Radius.circular(10.0),
-                                  )),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //
-                    //     Text(
-                    //   "Apni Gosol Korechen: ${getUnday() == 0 ? 'Ajkei!' : getUnday().toString() + ' Days Ago.'} ",
-                    //   style: theme.textTheme.headline3,
-                    //   textAlign: TextAlign.center,
-                    // ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              "TIMELINE",
-              style: GoogleFonts.encodeSans(
-                  fontSize: 20,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 5),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                "TIMELINE",
+                style: GoogleFonts.encodeSans(
+                    fontSize: 20,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 5),
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 15,
-          ),
-          Flexible(
-            child: Obx(
-                  () => ListView(shrinkWrap: true, children: [
-                Timeline.tileBuilder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  theme: TimelineThemeData(
-                    connectorTheme: const ConnectorThemeData(
-                      thickness: 3.0,
+            const SizedBox(
+              height: 15,
+            ),
+            Flexible(
+              child: Obx(
+                () => ListView(shrinkWrap: true, children: [
+                  Timeline.tileBuilder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    theme: TimelineThemeData(
+                      connectorTheme: const ConnectorThemeData(
+                        thickness: 3.0,
+                      ),
+                      indicatorTheme: const IndicatorThemeData(
+                        size: 15.0,
+                      ),
                     ),
-                    indicatorTheme: const IndicatorThemeData(
-                      size: 15.0,
-                    ),
-                  ),
-                  builder: TimelineTileBuilder.connected(
-                    itemCount: controller.gosolList.value.length,
-                    contentsAlign: ContentsAlign.basic,
-                    contentsBuilder: (context, index) {
-                      int dateToday = DateTime.fromMicrosecondsSinceEpoch(
-                              controller.gosolList.value[index].datetime!)
-                          .day;
+                    builder: TimelineTileBuilder.connected(
+                      itemCount: controller.gosolList.value.length,
+                      contentsAlign: ContentsAlign.basic,
+                      contentsBuilder: (context, index) {
+                        int dateToday = DateTime.fromMicrosecondsSinceEpoch(
+                                controller.gosolList.value[index].datetime!)
+                            .day;
 
-                      int datePrev = DateTime.fromMicrosecondsSinceEpoch(
-                              controller.gosolList
-                                  .value[index == 0 ? 0 : index - 1].datetime!)
-                          .day;
+                        int datePrev = DateTime.fromMicrosecondsSinceEpoch(
+                                controller
+                                    .gosolList
+                                    .value[index == 0 ? 0 : index - 1]
+                                    .datetime!)
+                            .day;
 
-                      int diffDay = dateToday - datePrev;
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Color(0xFFf1f8e9),
-                          ),
-                          height: 100,
-                          width: double.infinity,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("${diffDay} দিন"),
-                                    const Text("পরে"),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 80,
-                                  width: 60,
-                                  child: _iconBuilder(diffDay),
-                                ),
-                              ],
+                        int diffDay = dateToday - datePrev;
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Color(0xFFf1f8e9),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                    oppositeContentsBuilder: (context, index) {
-                      final gosol = controller.gosolList.value[index];
-
-                      return Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Card(
+                            height: 100,
+                            width: double.infinity,
                             child: Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    fD.format(
-                                        DateTime.fromMicrosecondsSinceEpoch(
-                                            gosol.datetime!)),
-                                    style: theme.textTheme.headline2,
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("${diffDay} দিন"),
+                                      const Text("পরে"),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    height: 8,
-                                  ),
-                                  Text(
-                                    fT.format(
-                                        DateTime.fromMicrosecondsSinceEpoch(
-                                            gosol.datetime!)),
-                                    style: theme.textTheme.headline5,
+                                  SizedBox(
+                                    height: 80,
+                                    width: 60,
+                                    child: _iconBuilder(diffDay),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                      oppositeContentsBuilder: (context, index) {
+                        final gosol = controller.gosolList.value[index];
 
-                    connectorBuilder: (_, index, __) =>
-                    const SolidLineConnector(
-                      color: Color(0xff64dd17),
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Card(
+                              child: Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      fD.format(
+                                          DateTime.fromMicrosecondsSinceEpoch(
+                                              gosol.datetime!)),
+                                      style: theme.textTheme.headline2,
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    Text(
+                                      fT.format(
+                                          DateTime.fromMicrosecondsSinceEpoch(
+                                              gosol.datetime!)),
+                                      style: theme.textTheme.headline5,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+
+                      connectorBuilder: (_, index, __) =>
+                          const SolidLineConnector(
+                        color: Color(0xff64dd17),
+                      ),
+
+                      indicatorBuilder: (_, index) => const DotIndicator(
+                        color: Color(0xff64dd17),
+                      ),
+
+                      itemExtentBuilder: (_, __) {
+                        return 100.0;
+                      },
+                      // indicatorStyle: IndicatorStyle.container,
+                      // connectorStyle: ConnectorStyle.solidLine,
+
+                      // connectorStyleBuilder: (context, index) {
+                      //   return ConnectorStyle.solidLine;
+                      // },
+                      // indicatorStyleBuilder: (context, index) =>
+                      // IndicatorStyle.dot,
                     ),
-
-                    indicatorBuilder: (_, index) => const DotIndicator(
-                      color: Color(0xff64dd17),
-                    ),
-
-                    itemExtentBuilder: (_, __) {
-                      return 100.0;
-                    },
-                    // indicatorStyle: IndicatorStyle.container,
-                    // connectorStyle: ConnectorStyle.solidLine,
-
-                    // connectorStyleBuilder: (context, index) {
-                    //   return ConnectorStyle.solidLine;
-                    // },
-                    // indicatorStyleBuilder: (context, index) =>
-                    // IndicatorStyle.dot,
                   ),
-                ),
-                SizedBox(
-                    height: 30,
-                    width: 40,
-                    child: TextButton(
-                        onPressed: () {},
-                        child: const Text("end of the list",
-                            style: TextStyle(
-                                fontSize: 14, color: Color(0xff64dd17))))),
-              ]),
+                  SizedBox(
+                      height: 30,
+                      width: 40,
+                      child: TextButton(
+                          onPressed: () {},
+                          child: const Text("end of the list",
+                              style: TextStyle(
+                                  fontSize: 14, color: Color(0xff64dd17))))),
+                ]),
 
-              //
+                //
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

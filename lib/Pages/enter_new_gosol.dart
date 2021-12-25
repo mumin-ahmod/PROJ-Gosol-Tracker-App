@@ -185,6 +185,7 @@ class EnterNewGosol extends StatelessWidget {
                                     timeOfDay.value.hour,
                                     timeOfDay.value.minute)
                                 .microsecondsSinceEpoch;
+
                             DatabaseHelper.insertGosol(
                                 GosolModel(datetime: gosolTime).toMap());
 

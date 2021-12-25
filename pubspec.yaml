@@ -44,6 +44,9 @@ dependencies:
   geocode: ^1.0.1
   image_picker: ^0.8.4+4
   synchronized: ^3.0.0
+  screenshot: ^1.2.3
+  path_provider: ^2.0.8
+  share: ^2.0.4
 
 
 dev_dependencies:

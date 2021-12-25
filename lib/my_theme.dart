@@ -27,9 +27,8 @@ class MyTheme {
         foregroundColor: Colors.black87,
       ),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: Colors.black87,
-        foregroundColor: Colors.white,
-      ),
+        // backgroundColor: Color(0xFFdcedc8),
+          ),
       textTheme: lightTextTheme,
     );
   }
