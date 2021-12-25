@@ -48,6 +48,8 @@ class DashboardPage extends StatelessWidget {
     }
   }
 
+  // CALCULATION FIXED!!
+
   int getContDay() {
     int cont = 1;
 
