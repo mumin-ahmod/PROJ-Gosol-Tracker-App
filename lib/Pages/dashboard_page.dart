@@ -37,13 +37,21 @@ class DashboardPage extends StatelessWidget {
   DateFormat fD = DateFormat("EEE d-MMM");
   DateFormat fT = DateFormat("h:mm a");
 
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
+  }
+
   int getUnday() {
     if (controller.gosolList.isNotEmpty) {
       DateTime dateLast = DateTime.fromMicrosecondsSinceEpoch(controller
           .gosolList.value[controller.gosolList.value.length - 1].datetime!);
 
-      return controller.unDay.value =
-          DateTime.now().difference(dateLast).inDays;
+      // return controller.unDay.value =
+      //     DateTime.now().difference(dateLast).inDays;
+
+      return controller.unDay.value = daysBetween(dateLast, DateTime.now());
     } else {
       return 0;
     }
@@ -362,18 +370,18 @@ class DashboardPage extends StatelessWidget {
                       itemCount: controller.gosolList.value.length,
                       contentsAlign: ContentsAlign.basic,
                       contentsBuilder: (context, index) {
-                        int dateToday = DateTime.fromMicrosecondsSinceEpoch(
-                                controller.gosolList.value[index].datetime!)
-                            .day;
+                        DateTime dateToday =
+                            DateTime.fromMicrosecondsSinceEpoch(
+                                controller.gosolList.value[index].datetime!);
 
-                        int datePrev = DateTime.fromMicrosecondsSinceEpoch(
-                                controller
-                                    .gosolList
-                                    .value[index == 0 ? 0 : index - 1]
-                                    .datetime!)
-                            .day;
+                        DateTime datePrev = DateTime.fromMicrosecondsSinceEpoch(
+                            controller.gosolList
+                                .value[index == 0 ? 0 : index - 1].datetime!);
 
-                        int diffDay = dateToday - datePrev;
+                        // int diffDay = dateToday.difference(datePrev).inDays;
+
+                        int diffDay = daysBetween(datePrev, dateToday);
+
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
