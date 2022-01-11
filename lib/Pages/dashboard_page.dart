@@ -42,7 +42,8 @@ class DashboardPage extends StatelessWidget {
       DateTime dateLast = DateTime.fromMicrosecondsSinceEpoch(controller
           .gosolList.value[controller.gosolList.value.length - 1].datetime!);
 
-      return controller.unDay.value = DateTime.now().day - dateLast.day;
+      return controller.unDay.value =
+          DateTime.now().difference(dateLast).inDays;
     } else {
       return 0;
     }
