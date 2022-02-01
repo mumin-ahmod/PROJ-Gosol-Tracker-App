@@ -1,6 +1,12 @@
 # gosol_tracker_app
 
-Gosol Tracker App for Winter time
+Funny Gosol Tracker App for Winter time.
+
+https://user-images.githubusercontent.com/73420728/151973561-3cbec354-94b8-480e-ad50-511c366e7d1a.mp4
+
+
+
+
 
 ## Getting Started
 
